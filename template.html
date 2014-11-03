@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<style>
+		#needle {
+			position: absolute;
+			top: 45px;
+			left: 50px;
+			z-index: 10;
+		}
+		#compass {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			z-index: 1;
+		}
+	</style>
+	<head>
+		<title>Compass Example</title>
+		
+	</head>
+	<body>
+		<img src="images/compassneedle.png" id="needle" height="150" width="150">
+		<img src="images/compasssmall.jpg" id="compass"  height="250" width="250" >
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="compass.js"></script>
+	</body>
+</html>
+<script>
+	var watchID = null;
+	// Wait for device API libraries to load
+	//
+	document.addEventListener("deviceready", onDeviceReady, false);
+	// device APIs are available
+	//
+	function onDeviceReady() {
+		startWatch();
+	}
+
+	// Start watching the compass
+	//
+	function startWatch() {
+		// Update compass 60 times / second form smooth animation
+		var options = {
+			frequency : 16
+		};
+		watchID = navigator.compass.watchHeading(onSuccess, onError, options);
+	}
+
+	// Stop watching the compass
+	//
+	function stopWatch() {
+		if (watchID) {
+			navigator.compass.clearWatch(watchID);
+			watchID = null;
+		}
+	}
+
+	// onSuccess: Get the current heading
+	//
+	function onSuccess(heading) {
+		//var element = document.getElementById('heading');
+		//element.innerHTML = 'Heading: ' + heading.magneticHeading;
+		var needle = document.getElementById("needle");
+		var transform = "rotate(-" + heading.magneticHeading + "deg)";
+		needle.style.webkitTransform = transform;
+	}
+
+	// onError: Failed to get the heading
+	//
+	function onError(compassError) {
+		alert('Compass error: ' + compassError.code);
+	}
+</script>
